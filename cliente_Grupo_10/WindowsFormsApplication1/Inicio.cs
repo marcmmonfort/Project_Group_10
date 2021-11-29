@@ -33,15 +33,17 @@ namespace WindowsFormsApplication1
 
         // 4. Bind del Servidor (para no tener que cambiarlo cada vez tanto en Register como en LogIn:
         int bind = 50080;
+        // int bind = 9010;
 
         // - - - - - - - - - - - - - - - - - - - - CLICK AL BOTÓN 'ENVIAR' - - - - - - - - - - - - - - - - - - - -
-        
+
         private void enviar_Click(object sender, EventArgs e)
         {
             if (Login.Checked)
             {
                 if (initialConnection == false)
                 {
+                    // IPAddress direc = IPAddress.Parse("192.168.56.102");
                     IPAddress direc = IPAddress.Parse("147.83.117.22");
                     IPEndPoint ipep = new IPEndPoint(direc, bind);
 
@@ -63,6 +65,7 @@ namespace WindowsFormsApplication1
                 if (((userLogin.Text == "") && (contraLogin.Text == "")) || ((userLogin.Text == "") || (contraLogin.Text == "")))
                 {
                     MessageBox.Show("[!] Debes llenar ambos campos para poder hacer el Login. [!]");
+                    initialConnection = false; // NO SE HA REALIZADO BIEN EL LOGIN, Y POR LO TANTO LO VOLVERÁ A HACER.
                 }
                 else
                 {
@@ -101,6 +104,7 @@ namespace WindowsFormsApplication1
                     else if (mensaje == "-1")
                     {
                         MessageBox.Show("[!] ERROR en el Logueo. [!]");
+                        initialConnection = false; // NO SE HA REALIZADO BIEN EL LOGIN, Y POR LO TANTO LO VOLVERÁ A HACER.
                     }
                 }
             }
@@ -111,7 +115,8 @@ namespace WindowsFormsApplication1
             {
                 if (initialConnection == false)
                 {
-                    IPAddress direc = IPAddress.Parse("147.83.117.22");
+                    IPAddress direc = IPAddress.Parse("192.168.56.102");
+                    // IPAddress direc = IPAddress.Parse("147.83.117.22");
                     IPEndPoint ipep = new IPEndPoint(direc, bind);
 
                     server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -131,6 +136,7 @@ namespace WindowsFormsApplication1
                 if (((userRegister.Text == "") && (contraRegister.Text == "")) || ((userRegister.Text == "") || (contraRegister.Text == "")))
                 {
                     MessageBox.Show("[!] Debes llenar ambos campos para poder hacer el Registro. [!]");
+                    initialConnection = false; // NO SE HA REALIZADO BIEN EL REGISTER, Y POR LO TANTO LO VOLVERÁ A HACER.
                 }
                 else
                 {
@@ -152,20 +158,31 @@ namespace WindowsFormsApplication1
                     else if (mensaje == "1")
                     {
                         MessageBox.Show("[!] Ya existe este usuario. [!]");
+                        initialConnection = false; // NO SE HA REALIZADO BIEN EL REGISTER, Y POR LO TANTO LO VOLVERÁ A HACER.
                     }
                     else if (mensaje == "-1")
                     {
                         MessageBox.Show("[!] ERROR en el Registro. [!]");
+                        initialConnection = false; // NO SE HA REALIZADO BIEN EL REGISTER, Y POR LO TANTO LO VOLVERÁ A HACER.
                     }
                     else
                         MessageBox.Show("[!] Error no identificado [!]");
+                    initialConnection = false; // NO SE HA REALIZADO BIEN EL REGISTER, Y POR LO TANTO LO VOLVERÁ A HACER.
                 }
             }
         }
 
+        // CERRAR POR BOTÓN.
         private void cerrar_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        // CERRAR POR PESTAÑA 'X'.
+        private void Inicio_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+            // No se debe hacer nada en especial, y ya la función cierra sola el formulario.
         }
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

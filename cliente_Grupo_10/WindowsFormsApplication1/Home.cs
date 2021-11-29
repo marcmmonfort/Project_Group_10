@@ -18,8 +18,22 @@ namespace WindowsFormsApplication1
         Socket server;
         Thread atender;
 
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        // JUEGO ABIERTO (Formulario de la Interfaz Gráfica):
+
+        interfaz_Grafica IG;
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        // Delegados del programa:
+
         delegate void DelegadoParaEscribir(string mensaje);
         delegate void DelegadoParaActualizar(string nombre, string YESorNO);
+        delegate void DelegadoTimer(string RS);
+        delegate void DelegadoChat(string mensaje);
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         // Booleans:
         bool Loged = false;
@@ -28,8 +42,8 @@ namespace WindowsFormsApplication1
 
         bool creandoPartida = false; // Si acaba el tiempo de espera o bien uno o más usuarios rechazan la partida, directamente ya no se sigue creando.
         bool partidaCreada = false; // Define si se ha creado o no la partida.
-        bool hasInvitado = false; // Declara si es la persona que ha invitado a las demás o no.
-        bool AceptanTodos = false; // Si han aceptado todos, cuando acaba el tiempo se abre para cada usuario el tablero.
+        bool hasInvitado = false; // Declara si es la persona que ha invitado a las demás o no, declara si eres el anfitrión.
+        bool AceptanTodos = true; // Si han aceptado todos, cuando acaba el tiempo se abre para cada usuario el tablero.
 
         // - - - - - - - - - - - - - - - - - - - - PARÁMETROS - - - - - - - - - - - - - - - - - - - -
 
@@ -40,7 +54,9 @@ namespace WindowsFormsApplication1
         // 2. Fecha de partida que está usando el programa de cliente.
         string fecha;
 
-        //Atendemos al servidor
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+        // ATENDER SERVIDOR DES DEL MENÚ (HOME).
+
         private void AtenderServidor()
         {
             while (true)
@@ -49,23 +65,34 @@ namespace WindowsFormsApplication1
                 byte[] msg2 = new byte[80];
                 server.Receive(msg2);
                 string[] trozos = Encoding.ASCII.GetString(msg2).Split('/');
+                // MessageBox.Show(trozos[0]); // TEST.
                 int codigo = Convert.ToInt32(trozos[0]);
                 string mensaje = trozos[1].Split('\0')[0];
                 switch (codigo)
                 {
                     case 1: // Respuesta a la Petición 1.
-                        
-                        MessageBox.Show(user + " tiene " + mensaje + " puntos después de ganar el día " + fechaPartida.Text);
+                        if (mensaje == "-1")
+                            MessageBox.Show(user + " no tiene puntos.");
+                        else
+                            MessageBox.Show(user + " tiene " + mensaje + " puntos después de ganar el día " + fechaPartida.Text);
                         break;
 
                     case 2: // Respuesta a la Petición 2.
 
-                        MessageBox.Show(user + " ha jugado " + mensaje + " partidas.");
+                        if (mensaje == "-1")
+                            MessageBox.Show(user + " no ha jugado ninguna partida.");
+                        else if (mensaje == "1")
+                            MessageBox.Show(user + " ha jugado " + mensaje + " partida.");
+                        else
+                            MessageBox.Show(user + " ha jugado " + mensaje + " partidas.");
                         break;
 
                     case 3: // Respuesta a la Petición 3.
 
-                        MessageBox.Show(user + " ha ganado a: " + mensaje);
+                        if (mensaje == "-1")
+                            MessageBox.Show(user + " no ha ganado a nadie.");
+                        else
+                            MessageBox.Show(user + " ha ganado a: " + mensaje);
                         break;
 
                     case 5: // Respuesta a la Petición 5. // ¿ESTO NO ESTÁ DUPLICADO?
@@ -80,6 +107,11 @@ namespace WindowsFormsApplication1
                         break;
 
                     case 10: // Te estan invitando a una partida.
+
+                        // Delegado para arrancar el Timer en todos los formularios:
+                        string RS = "R"; // Queremos que el timer arranque.
+                        DelegadoTimer D = new DelegadoTimer(ControlarReloj);
+                        Invoke(D, new object[] { RS });
 
                         if (hasInvitado == false) // Si no eres tu el que has invitado...
                         {
@@ -97,27 +129,29 @@ namespace WindowsFormsApplication1
                                 server.Send(msg);
                             }
                         }
+                        else if (hasInvitado == true) // Si eres el que invita, claramente vas a jugar.
+                        {
+                            string answer = "11/YES-" + user;
+                            byte[] msg = System.Text.Encoding.ASCII.GetBytes(answer);
+                            server.Send(msg);
+                        }
                         break;
 
                     case 12: // Estás recibiendo una respuesta a la invitación de una partida.
+                        
+                        char delimeter = '-';
+                        string[] split = mensaje.Split(delimeter);
+                        string nombre = split[0];
+                        string YESorNO = split[1];
 
-                        // Solo la atiendes si eres el que has invitado:
-
-                        if (hasInvitado == true)
+                        if (YESorNO == "NO")
                         {
-                            // Recibimos: 'YES-Marc' o 'NO-Marc'.
-                            char delimeter = '-';
-                            string[] split = mensaje.Split(delimeter);
-                            string nombre = split[0];
-                            string YESorNO = split[1];
-                            if (YESorNO == "NO")
-                            {
-                                AceptanTodos = false; // Cuando alguien rechaza la partida, ya no se juega.
-                            }
-                            MessageBox.Show(nombre);
-                            DelegadoParaActualizar delegat = new DelegadoParaActualizar(ActualizarEstados);
-                            gridListaConectados.Invoke(delegat, new object[] {nombre, YESorNO});
+                            AceptanTodos = false; // Cuando alguien rechaza la partida, ya no se juega.
                         }
+
+                        DelegadoParaActualizar delegat = new DelegadoParaActualizar(ActualizarEstados);
+                        Invoke(delegat, new object[] {nombre, YESorNO});
+
                         break;
 
                     case 13: // Si alguien ha rechazado la partida y, por lo tanto, no se crea:
@@ -127,26 +161,81 @@ namespace WindowsFormsApplication1
 
                     case 55: // Si todos han aceptado las partidas y, por lo tanto, se juega:
 
-                        interfaz_Grafica frm = new interfaz_Grafica();
-                        frm.Show();
+                        ThreadStart ts = delegate { PonerEnMarchaInterfazGrafica(); };
+                        Thread Open = new Thread(ts);
+                        Open.Start();
+                        break;
+
+                    case 15:
+                        MessageBox.Show(mensaje + " Has sido invitado.");
+                        break;
+
+                    case 28: // Cuando se recibe la notificación de un mensaje nuevo:
+                        DelegadoChat delegated = new DelegadoChat(IG.ActualizarChat);
+                        Invoke(delegated, new object[] { mensaje});
                         break;
                 }
             }
         }
 
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+        // - - - - - - - - - - Función que se usará para abrir la Interfaz Gráfica: - - - - - - - - - -
+
+        private void PonerEnMarchaInterfazGrafica()
+        {
+            interfaz_Grafica frm = new interfaz_Grafica(server, user);
+            this.IG = frm;
+            // frm.Show(); 
+            frm.ShowDialog();
+        }
+
+        // - - - - - - - - - - Funciones que se usarán con delegados: - - - - - - - - - -
+
+
+
+        public void ControlarReloj(string RS)
+        {
+            if (RS == "R") // (R)un: Arranca el Timer.
+            {
+                cuentaAtras.Start();
+                tiempo.ForeColor = Color.LightGray;
+                tiempo.Text = "30";
+
+            }
+            else if (RS == "S") // (S)top: Para el Timer.
+            {
+                cuentaAtras.Stop();
+            }
+        }
+
+        // - - - - - - - - - - - - - - - - - - - -
+
         public void ActualizarEstados(string nombre, string YESorNO)
         {
-            string row = "Does " + nombre + " Play? " + YESorNO;
-            estadoInvitados.Rows.Add(row);
+            estadoInvitados.ColumnCount = 2;
+            estadoInvitados.GridColor = Color.LightGray;
+            estadoInvitados.Columns[0].HeaderText = "Invitado";
+            estadoInvitados.Columns[1].HeaderText = "¿Acepta?";
+            estadoInvitados.ColumnHeadersDefaultCellStyle.BackColor = Color.LightGray;
+            estadoInvitados.EnableHeadersVisualStyles = false;
+
+            estadoInvitados.Rows.Add(nombre, YESorNO);
             estadoInvitados.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
             estadoInvitados.ClearSelection();
         }
 
+        // - - - - - - - - - - - - - - - - - - - -
+
         public void PonListaConectados(string mensaje)
         {
             gridListaConectados.Rows.Clear();
-            gridListaConectados.ColumnCount = 1;
+            gridListaConectados.ColumnCount = 2; // Columna 1: Nombre. + Columna 2: Socket.
+            gridListaConectados.Columns[0].HeaderText = "User";
+            gridListaConectados.Columns[1].HeaderText = "Socket";
             gridListaConectados.GridColor = Color.LightGray;
+            gridListaConectados.ColumnHeadersDefaultCellStyle.BackColor = Color.LightGray;
+            gridListaConectados.EnableHeadersVisualStyles = false;
 
             if (mensaje != null)
             {
@@ -155,13 +244,19 @@ namespace WindowsFormsApplication1
                 int i = 1;
                 while (i < split.Length)
                 {
-                    gridListaConectados.Rows.Add(split[i]);
+                    string pack = split[i];
+                    string[] nameSocket = pack.Split('|');
+                    string usuario = nameSocket[0];
+                    int soquet = Convert.ToInt32(nameSocket[1]);
+                    gridListaConectados.Rows.Add(usuario, soquet);
                     i = i + 1;
                 }
                 gridListaConectados.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
             }
             gridListaConectados.ClearSelection();
         }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         public Home()
         {
@@ -188,21 +283,6 @@ namespace WindowsFormsApplication1
         {
             this.user = U;
             this.password = P;
-        }
-
-
-        // - - - - - - - - - - - - - - - - - - - - BOTÓN DESCONECTAR - - - - - - - - - - - - - - - - - - - -
-
-        private void Desconectar_Click_1(object sender, EventArgs e)
-        {
-            atender.Abort();
-            string mensaje = "0/" + user;
-            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
-
-            server.Send(msg);
-            server.Shutdown(SocketShutdown.Both);
-            server.Close();
-            this.Close();
         }
 
         // - - - - - - - - - - - - - - - - - - - - BOTÓN ENVIAR PETICIÓN - - - - - - - - - - - - - - - - - - - -
@@ -246,12 +326,6 @@ namespace WindowsFormsApplication1
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        private void openGame_Click(object sender, EventArgs e)
-        {
-            interfaz_Grafica frm = new interfaz_Grafica();
-            frm.Show();
-        }
-
         private void Home_Load(object sender, EventArgs e)
         {
             cuentaAtras.Interval = 1000;
@@ -277,11 +351,6 @@ namespace WindowsFormsApplication1
             estadoInvitados.Rows.Clear();
             estadoInvitados.ColumnCount = 1;
             estadoInvitados.GridColor = Color.LightGray;
-
-            // Te incluyes a ti mismo como que tu si que juegas:
-
-            DelegadoParaActualizar delegat = new DelegadoParaActualizar(ActualizarEstados);
-            gridListaConectados.Invoke(delegat, new object[] { user, "YES" });
         }
 
         private void cuentaAtras_Tick(object sender, EventArgs e)
@@ -304,13 +373,13 @@ namespace WindowsFormsApplication1
             {
                 cuentaAtras.Stop();
                 creandoPartida = false; // El proceso de creación de la partida se para.
-                hasInvitado = false; // Ya no has invitado.
                 if (AceptanTodos == false)
                 {
                     // No se crea la partida. Avisar a todos los usuarios.
                     string mensaje = "13/";
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
                     server.Send(msg);
+                    hasInvitado = false; // Ya no has invitado.
                 }
                 else if (AceptanTodos == true)
                 {
@@ -318,14 +387,75 @@ namespace WindowsFormsApplication1
                     string mensaje = "55/";
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
                     server.Send(msg);
+                    hasInvitado = false; // Ya no has invitado.
                 }
+            }
+            if (AceptanTodos == false)
+            {
+                cuentaAtras.Stop();
+                creandoPartida = false; // El proceso de creación de la partida se para.
+                hasInvitado = false; // Ya no has invitado.
+                // No se crea la partida. Avisar a todos los usuarios.
+                string mensaje = "13/"; // ¡PARA AQUÍ!
+                byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+                server.Send(msg);
             }
         }
 
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - DESCONECTAR - - - - - - - - - - - - - - - - - - - -
 
-        // YA NO USAMOS LA PETICIÓN 'DAME LISTA DE CONECTADOS'.
+        // CERRAR POT BOTÓN.
+        private void Desconectar_Click_1(object sender, EventArgs e)
+        {
+            atender.Abort();
+            string mensaje = "0/" + user;
+            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
 
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            server.Send(msg);
+            server.Shutdown(SocketShutdown.Both);
+            server.Close();
+            this.Close();
+        }
+
+        // CERRAR POR PESTAÑA 'X'.
+        private void Inicio_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            atender.Abort();
+            string mensaje = "0/" + user;
+            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+
+            cuentaAtras.Stop(); // Paramos la cuenta atrás en caso de que estubiera contando.
+
+            server.Send(msg);
+            server.Shutdown(SocketShutdown.Both);
+            server.Close();
+        }
+
+        private void gridListaConectados_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var nombre = gridListaConectados.Rows[e.RowIndex].Cells[0].Value;
+            var socket = gridListaConectados.Rows[e.RowIndex].Cells[1].Value;
+
+
+            
+
+           
+            string mensaje = "15/" + nombre.ToString(); // Se invita a un usuario
+            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+            server.Send(msg);
+            hasInvitado = true;
+            string answer = "11/YES-" + user;
+            byte[] msg2 = System.Text.Encoding.ASCII.GetBytes(answer);
+            server.Send(msg2);
+
+
+
+            estadoInvitados.Rows.Clear();
+            estadoInvitados.ColumnCount = 1;
+            estadoInvitados.GridColor = Color.LightGray;
+        }
     }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 }
+

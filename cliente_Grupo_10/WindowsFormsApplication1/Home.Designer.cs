@@ -41,7 +41,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.fechaPartida = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.openGame = new System.Windows.Forms.Button();
             this.gridListaConectados = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.Desconectar = new System.Windows.Forms.Button();
@@ -59,7 +58,7 @@
             // 
             this.enviar.BackColor = System.Drawing.Color.LightGray;
             this.enviar.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.enviar.Location = new System.Drawing.Point(6, 202);
+            this.enviar.Location = new System.Drawing.Point(6, 260);
             this.enviar.Name = "enviar";
             this.enviar.Size = new System.Drawing.Size(339, 23);
             this.enviar.TabIndex = 5;
@@ -71,7 +70,7 @@
             // 
             this.Petición_Marc.AutoSize = true;
             this.Petición_Marc.ForeColor = System.Drawing.Color.LightGray;
-            this.Petición_Marc.Location = new System.Drawing.Point(12, 64);
+            this.Petición_Marc.Location = new System.Drawing.Point(12, 96);
             this.Petición_Marc.Name = "Petición_Marc";
             this.Petición_Marc.Size = new System.Drawing.Size(221, 18);
             this.Petición_Marc.TabIndex = 8;
@@ -83,7 +82,7 @@
             // 
             this.Petición_Alba.AutoSize = true;
             this.Petición_Alba.ForeColor = System.Drawing.Color.LightGray;
-            this.Petición_Alba.Location = new System.Drawing.Point(12, 88);
+            this.Petición_Alba.Location = new System.Drawing.Point(12, 122);
             this.Petición_Alba.Name = "Petición_Alba";
             this.Petición_Alba.Size = new System.Drawing.Size(326, 18);
             this.Petición_Alba.TabIndex = 7;
@@ -96,7 +95,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(210)))), ((int)(((byte)(5)))));
-            this.label3.Location = new System.Drawing.Point(19, 29);
+            this.label3.Location = new System.Drawing.Point(24, 46);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(88, 16);
             this.label3.TabIndex = 12;
@@ -106,7 +105,7 @@
             // 
             this.Petición_Eloi.AutoSize = true;
             this.Petición_Eloi.ForeColor = System.Drawing.Color.LightGray;
-            this.Petición_Eloi.Location = new System.Drawing.Point(12, 112);
+            this.Petición_Eloi.Location = new System.Drawing.Point(12, 147);
             this.Petición_Eloi.Name = "Petición_Eloi";
             this.Petición_Eloi.Size = new System.Drawing.Size(193, 18);
             this.Petición_Eloi.TabIndex = 17;
@@ -128,7 +127,7 @@
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(351, 231);
+            this.groupBox1.Size = new System.Drawing.Size(351, 289);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Peticiones, Grupo 10";
@@ -137,7 +136,7 @@
             // 
             this.fechaPartida.BackColor = System.Drawing.Color.LightGray;
             this.fechaPartida.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.fechaPartida.Location = new System.Drawing.Point(77, 166);
+            this.fechaPartida.Location = new System.Drawing.Point(77, 207);
             this.fechaPartida.Name = "fechaPartida";
             this.fechaPartida.Size = new System.Drawing.Size(196, 20);
             this.fechaPartida.TabIndex = 29;
@@ -147,28 +146,18 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.LightGray;
-            this.label2.Location = new System.Drawing.Point(105, 149);
+            this.label2.Location = new System.Drawing.Point(105, 190);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(147, 14);
             this.label2.TabIndex = 28;
             this.label2.Text = "Fecha de la partida:";
             // 
-            // openGame
-            // 
-            this.openGame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(210)))), ((int)(((byte)(5)))));
-            this.openGame.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.openGame.Location = new System.Drawing.Point(12, 277);
-            this.openGame.Name = "openGame";
-            this.openGame.Size = new System.Drawing.Size(351, 22);
-            this.openGame.TabIndex = 30;
-            this.openGame.Text = "Botón Demo parar Abrir la Interfaz Gráfica";
-            this.openGame.UseVisualStyleBackColor = false;
-            this.openGame.Click += new System.EventHandler(this.openGame_Click);
-            // 
             // gridListaConectados
             // 
             this.gridListaConectados.BackgroundColor = System.Drawing.Color.LightGray;
             this.gridListaConectados.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.gridListaConectados.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.gridListaConectados.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(19)))), ((int)(((byte)(73)))));
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -178,7 +167,6 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.gridListaConectados.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.gridListaConectados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridListaConectados.ColumnHeadersVisible = false;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.LightGray;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -195,6 +183,7 @@
             this.gridListaConectados.RowHeadersWidth = 51;
             this.gridListaConectados.Size = new System.Drawing.Size(175, 95);
             this.gridListaConectados.TabIndex = 30;
+            this.gridListaConectados.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridListaConectados_CellClick);
             // 
             // label1
             // 
@@ -213,7 +202,7 @@
             this.Desconectar.BackColor = System.Drawing.Color.DarkRed;
             this.Desconectar.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Desconectar.ForeColor = System.Drawing.Color.LightGray;
-            this.Desconectar.Location = new System.Drawing.Point(12, 249);
+            this.Desconectar.Location = new System.Drawing.Point(12, 307);
             this.Desconectar.Name = "Desconectar";
             this.Desconectar.Size = new System.Drawing.Size(351, 22);
             this.Desconectar.TabIndex = 30;
@@ -250,6 +239,8 @@
             // 
             this.estadoInvitados.BackgroundColor = System.Drawing.Color.LightGray;
             this.estadoInvitados.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.estadoInvitados.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.estadoInvitados.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(19)))), ((int)(((byte)(73)))));
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -259,7 +250,6 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.estadoInvitados.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.estadoInvitados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.estadoInvitados.ColumnHeadersVisible = false;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.Color.LightGray;
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -274,13 +264,13 @@
             this.estadoInvitados.Name = "estadoInvitados";
             this.estadoInvitados.RowHeadersVisible = false;
             this.estadoInvitados.RowHeadersWidth = 51;
-            this.estadoInvitados.Size = new System.Drawing.Size(175, 93);
+            this.estadoInvitados.Size = new System.Drawing.Size(175, 123);
             this.estadoInvitados.TabIndex = 33;
             // 
             // tiempo
             // 
             this.tiempo.BackColor = System.Drawing.Color.Transparent;
-            this.tiempo.Font = new System.Drawing.Font("Built Titling Rg", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tiempo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tiempo.ForeColor = System.Drawing.Color.LightGray;
             this.tiempo.Location = new System.Drawing.Point(418, 159);
             this.tiempo.Name = "tiempo";
@@ -298,7 +288,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(19)))), ((int)(((byte)(73)))));
-            this.ClientSize = new System.Drawing.Size(554, 311);
+            this.ClientSize = new System.Drawing.Size(554, 341);
             this.Controls.Add(this.tiempo);
             this.Controls.Add(this.estadoInvitados);
             this.Controls.Add(this.label4);
@@ -306,7 +296,6 @@
             this.Controls.Add(this.Desconectar);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.gridListaConectados);
-            this.Controls.Add(this.openGame);
             this.Controls.Add(this.groupBox1);
             this.ForeColor = System.Drawing.Color.Black;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -334,7 +323,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox fechaPartida;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button openGame;
         private System.Windows.Forms.DataGridView gridListaConectados;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button Desconectar;

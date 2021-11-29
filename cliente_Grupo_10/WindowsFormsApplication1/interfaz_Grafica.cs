@@ -7,15 +7,49 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using System.Net;
+using System.Net.Sockets;
 
 namespace WindowsFormsApplication1
 {
     public partial class interfaz_Grafica : Form
     {
-        public interfaz_Grafica()
+        Socket server;
+        string user;
+
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+        delegate void MoverElChat(string mensaje);
+
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+        public interfaz_Grafica(Socket server, string user)
         {
             InitializeComponent();
+            this.server = server;
+            this.user = user;
+            userName.Text = user;
         }
+
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+        // Función para ver cual es el nuevo mensaje que llega:
+
+        public void ActualizarChat(string missatge)
+        {
+            MoverElChat delegated = new MoverElChat(MoverChat);
+            Invoke(delegated, new object[] { missatge });
+        }
+
+        public void MoverChat(string mssg)
+        {
+            message1.Text = message2.Text;
+            message2.Text = message3.Text;
+            message3.Text = message4.Text;
+            message4.Text = mssg;
+        }
+
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
         private void testComunidad_Click(object sender, EventArgs e)
         {
@@ -54,7 +88,7 @@ namespace WindowsFormsApplication1
 
         private void time_Tick(object sender, EventArgs e)
         {
-            tiempo.Text = DateTime.Now.ToString("HH:mm:ss");
+            temps.Text = DateTime.Now.ToString("HH:mm:ss");
         }
 
         private void interfaz_Grafica_Load(object sender, EventArgs e)
@@ -62,12 +96,6 @@ namespace WindowsFormsApplication1
             // Declaramos que el tiempo varia cada 1 s (1000 ms):
             time.Interval = 1000;
             time.Start();
-        }
-
-        private void salir_Click(object sender, EventArgs e)
-        {
-            time.Stop();
-            Close();
         }
 
         private void lanzarDados_Click(object sender, EventArgs e)
@@ -93,5 +121,36 @@ namespace WindowsFormsApplication1
                 dado.BackgroundImage = Properties.Resources.Dado_6;
             }
         }
+        
+        // - - - - - - - - - - - - - - - - - - - - DESCONECTAR - - - - - - - - - - - - - - - - - - - -
+
+        // CERRAR POT BOTÓN.
+        private void salir_Click(object sender, EventArgs e)
+        {
+            time.Stop();
+            Close();
+        }
+
+        // CERRAR POR PESTAÑA 'X'.
+        private void Inicio_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            time.Stop();
+        }
+
+        private void sendMessage_Click(object sender, EventArgs e)
+        {
+            string mensaje = "28/" + user + ": " + escrito.Text;
+            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+            if (escrito.Text == "") // Si se nos olvida rellenar el campo de mensaje...
+            {
+                MessageBox.Show("¡No has escrito nada!");
+            }
+            else // Envía el mensaje.
+            {
+                server.Send(msg);
+            }
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     }
 }
