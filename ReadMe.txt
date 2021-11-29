@@ -33,5 +33,6 @@
 >> VERSION 5:
 
 -> Generado por Marc.
+-> Verificado por Alba.
 
 - - - - - - - - - - - - - - - - - - - -
