@@ -1,3 +1,5 @@
+PROYECTO SO, GRUPO 10.
+
 >> VERSION 1:
 
 -> Generado por Marc.
@@ -35,4 +37,13 @@
 -> Generado por Marc.
 -> Verificado por Alba.
 -> Comunicado por Eloi.
+
+- - - - - - - - - - - - - - - - - - - -
+
+>> VERSION FINAL:
+
+-> Generado por Marc.
+-> Verificado por Eloi.
+-> Comunicado por Alba.
+
 - - - - - - - - - - - - - - - - - - - -
